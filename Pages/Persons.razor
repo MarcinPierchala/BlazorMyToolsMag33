@@ -1,0 +1,58 @@
+﻿@page "/persons"
+@using BlazorMyToolsMag33.Models;
+@using BlazorMyToolsMag33.Services;
+@attribute [Authorize]
+@inject IPersonsService PersonsService
+
+<div>
+    <a class="btn btn-primary" href='/addPerson'>Add</a>
+</div>
+
+<div class="card mt-4">
+    <h4 class="card-header">Persons</h4>
+    <div class="card-body">
+        <h6>List of Persons from secure api end point</h6>
+        @if (loading)
+        {
+            <div class="spinner-border spinner-border-sm"></div>
+        }
+        @if (persons != null)
+        {
+            <ul>
+                @foreach (var person in persons)
+                {
+                    <tr>
+                        <td>@person.Id</td>
+                        <td>@person.PersonName</td>
+                        <td>
+                            <a class="btn btn-primary" href='/person/@person.Id'>Edit</a>  |
+                            <a class="btn btn-danger" @onclick="() => DeletePerson(person.Id)">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private bool loading;
+    private IEnumerable<Person> persons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        persons = await PersonsService.GetAll();
+        loading = false;
+    }
+
+    protected async Task DeletePerson(int id)
+    {
+        await PersonsService.Delete(id);
+
+        persons = await PersonsService.GetAll();
+        //loading = true;
+        //persons = await personsService.GetAll();
+        //loading = false;
+    }
+}

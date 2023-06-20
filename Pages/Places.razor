@@ -1,0 +1,58 @@
+﻿@page "/places"
+@using BlazorMyToolsMag33.Models;
+@using BlazorMyToolsMag33.Services;
+@attribute [Authorize]
+@inject IPlacesService PlacesService
+
+<div>
+    <a class="btn btn-primary" href='/addPlace'>Add</a>
+</div>
+
+<div class="card mt-4">
+    <h4 class="card-header">Places</h4>
+    <div class="card-body">
+        <h6>List of Places from secure api end point</h6>
+        @if (loading)
+        {
+            <div class="spinner-border spinner-border-sm"></div>
+        }
+        @if (places != null)
+        {
+            <ul>
+                @foreach (var place in places)
+                {
+                    <tr>
+                        <td>@place.Id</td>
+                        <td>@place.PlaceName</td>
+                        <td>
+                            <a class="btn btn-primary" href='/place/@place.Id'>Edit</a>  |
+                            <a class="btn btn-danger" @onclick="() => DeletePlace(place.Id)">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private bool loading;
+    private IEnumerable<Place> places;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        places = await PlacesService.GetAll();
+        loading = false;
+    }
+
+    protected async Task DeletePlace(int id)
+    {
+        await PlacesService.Delete(id);
+
+        places = await PlacesService.GetAll();
+        //loading = true;
+        //Places = await PlacesService.GetAll();
+        //loading = false;
+    }
+}

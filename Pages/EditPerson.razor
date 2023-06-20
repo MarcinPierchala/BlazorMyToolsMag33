@@ -1,0 +1,46 @@
+﻿@page "/person/{ID}"
+@using BlazorMyToolsMag33.Models;
+@using BlazorMyToolsMag33.Services;
+@attribute [Authorize]
+@inject IPersonsService PersonsService
+@inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
+
+<div class="row">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input for="Name" class="form-control" @bind-value="@Person.PersonName" />
+                <input type="hidden" @bind-value="@Person.Id" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" @onclick="() => UpdatePerson()">Save</button>
+                <button type="button" class="btn btn-danger" @onclick="() => cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    Person Person = new Person();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Person = await PersonsService.GetById(Convert.ToInt32(Id));
+    }
+
+    protected async Task UpdatePerson()
+    {
+        await PersonsService.Update(Person);
+        navigationManager.NavigateTo("/Persons");
+    }
+
+    void cancel()
+    {
+        navigationManager.NavigateTo("/Persons");
+    }
+}

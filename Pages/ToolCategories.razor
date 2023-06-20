@@ -1,0 +1,58 @@
+﻿@page "/toolCategories"
+@using BlazorMyToolsMag33.Models;
+@using BlazorMyToolsMag33.Services;
+@attribute [Authorize]
+@inject IToolCategoriesService ToolCategoriesService
+
+<div>
+    <a class="btn btn-primary" href='/addToolCategory'>Add</a>
+</div>
+
+<div class="card mt-4">
+    <h4 class="card-header">Tool Categories</h4>
+    <div class="card-body">
+        <h6>Tool Categories from secure api end point</h6>
+        @if (loading)
+        {
+            <div class="spinner-border spinner-border-sm"></div>
+        }
+        @if (toolCategories != null)
+        {
+            <ul>
+                @foreach (var toolCategory in toolCategories)
+                {
+                    <tr>
+                        <td>@toolCategory.Id</td>
+                        <td>@toolCategory.ToolCategoryName</td>
+                        <td>
+                            <a class="btn btn-primary" href='/toolCategory/@toolCategory.Id'>Edit</a>  |
+                            <a class="btn btn-danger" @onclick="() => DeleteToolCategory(toolCategory.Id)">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private bool loading;
+    private IEnumerable<ToolCategory> toolCategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        toolCategories = await ToolCategoriesService.GetAll();
+        loading = false;
+    }
+
+    protected async Task DeleteToolCategory(int id)
+    {
+        await ToolCategoriesService.Delete(id);
+
+        toolCategories = await ToolCategoriesService.GetAll();
+        //loading = true;
+        //toolCategories = await ToolCategoriesService.GetAll();
+        //loading = false;
+    }
+}
