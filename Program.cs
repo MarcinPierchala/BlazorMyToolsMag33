@@ -2,10 +2,11 @@ using BlazorMyToolsMag33;
 using BlazorMyToolsMag33.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+//builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
     .AddScoped<IToolsService, ToolsService>()
