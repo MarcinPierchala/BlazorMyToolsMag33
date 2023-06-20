@@ -9,10 +9,10 @@ namespace BlazorMyToolsMag33.Helpers
     public class AppRouteView : RouteView
     {
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
+        public required NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        public IAuthenticationService AuthenticationService { get; set; }
+        public required IAuthenticationService AuthenticationService { get; set; }
 
         protected override void Render(RenderTreeBuilder builder)
         {
