@@ -19,8 +19,9 @@ namespace BlazorMyToolsMag33.Helpers
             var authorize = Attribute.GetCustomAttribute(RouteData.PageType, typeof(AuthorizeAttribute)) != null;
             if (authorize && AuthenticationService.Admin == null)
             {
-                var returnUrl = WebUtility.UrlEncode(new Uri(NavigationManager.Uri).PathAndQuery);
-                NavigationManager.NavigateTo($"login?returnUrl={returnUrl}");
+                //var returnUrl = WebUtility.UrlEncode(new Uri(NavigationManager.Uri).PathAndQuery);
+                //NavigationManager.NavigateTo($"login?returnUrl={returnUrl}");
+                NavigationManager.NavigateTo("login");
             }
             else
             {
