@@ -3,6 +3,9 @@
 @using BlazorMyToolsMag33.Services;
 @attribute [Authorize]
 @inject IToolsService ToolsService
+@inject IPlacesService PlacesService
+@inject IPersonsService PersonsService
+@inject IToolCategoriesService ToolCategoriesService
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 <div class="row">
@@ -11,8 +14,16 @@
             <div class="form-group">
                 <label for="Name" class="control-label">Name</label>
                 <input for="Name" class="form-control" @bind-value="@tool.ToolName" />
-                <label for="CatId" class="control-label">CategoryId</label>
-                <input for="CatId" class="form-control" @bind-value="@tool.ToolCategoryId" />
+                <tr>
+                    <td>Category    </td>
+                    <select class="form-control col-6" @onchange="@(x => OnSelCategoryChange(Convert.ToInt32(x.Value)))">
+                        <option value=@tool.ToolCategoryId disabled selected hidden>@selectedCategory</option>
+                        @foreach (var cats in toolCategories)
+                        {
+                            <option value=@cats.Id>@cats.ToolCategoryName</option>
+                        }
+                    </select>
+                </tr>
                 <label for="PersonId" class="control-label">PersonId</label>
                 <input for="PersonId" class="form-control" @bind-value="@tool.PersonId" />
                 <label for="PlaceId" class="control-label">PlaceId</label>
@@ -33,10 +44,33 @@
     public string Id { get; set; }
 
     Tool tool = new Tool();
+    private IEnumerable<Place> places;
+    private IEnumerable<Person> persons;
+    private IEnumerable<ToolCategory> toolCategories;
+    private List<string> placesList;
+    private List<string> personsList;
+    private List<string> categoriesList;
+    private string selectedCategory = "";
 
     protected override async Task OnInitializedAsync()
     {
         tool = await ToolsService.GetById(Convert.ToInt32(Id));
+        places = await PlacesService.GetAll();
+        //foreach (var placeee in places)
+        //{
+        //    placesList.Add(placeee.PlaceName.ToString());
+        //}
+        persons = await PersonsService.GetAll();
+        //foreach (var personnn in persons)
+        //{
+        //    personsList.Add(personnn.PersonName.ToString());
+        //}
+        toolCategories = await ToolCategoriesService.GetAll();
+        //foreach (var categoriesss in toolCategories)
+        //{
+        //    categoriesList.Add(categoriesss.ToolCategoryName.ToString());
+        //}
+        selectedCategory = toolCategories.Single(x => x.Id == tool.ToolCategoryId).ToolCategoryName;
     }
 
     protected async Task UpdateTool()
@@ -49,4 +83,6 @@
     {
         navigationManager.NavigateTo("/tools");
     }
+    public void OnSelCategoryChange(int textValue) => tool.ToolCategoryId = textValue;
+
 }
