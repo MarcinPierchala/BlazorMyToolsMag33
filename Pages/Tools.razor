@@ -1,9 +1,13 @@
 ﻿@page "/tools"
 @attribute [Authorize]
+@using System.Collections.Generic;
 @using BlazorMyToolsMag33.Models;
 @using BlazorMyToolsMag33.Services;
 @inject HttpClient Http
 @inject IToolsService ToolsService
+@inject IPlacesService PlacesService
+@inject IPersonsService PersonsService
+@inject IToolCategoriesService ToolCategoriesService
 
 <PageTitle>Tools</PageTitle>
 
@@ -34,12 +38,36 @@ else
         <tbody>
             @foreach (var tool in tools)
             {
+                var categoryName = "";
+                var personName = "";
+                var placeName = "";
+                foreach(var catName in toolCategories)
+                {
+                    if(catName.Id == tool.ToolCategoryId)
+                    {
+                        categoryName = catName.ToolCategoryName;
+                    }
+                }
+                foreach(var plcs in places)
+                {
+                    if(plcs.Id == tool.PlaceId)
+                    {
+                        placeName = plcs.PlaceName;
+                    }
+                }
+                foreach(var prsn in persons)
+                {
+                    if(prsn.Id == tool.PersonId)
+                    {
+                        personName = prsn.PersonName;
+                    }
+                }
                 <tr>
                     <td>@tool.Id  </td>
                     <td>@tool.ToolName  </td>
-                    <td>@tool.ToolCategoryName</td>
-                    <td>@tool.PersonName  </td>
-                    <td>@tool.PlaceName  </td>
+                    <td>@categoryName</td>
+                    <td>@personName  </td>
+                    <td>@placeName  </td>
                     <td>
                         <a class="btn btn-primary" href='/tool/@tool.Id'>Edit</a>  |
                         <!--<a class="btn btn-danger" @onclick="() => DeleteTool(tool.Id)">Delete</a>-->
@@ -53,11 +81,18 @@ else
 @code {
     private bool loading;
     private IEnumerable<Tool> tools;
+    private IEnumerable<Place> places;
+    private IEnumerable<Person> persons;
+    private IEnumerable<ToolCategory> toolCategories;
 
     protected override async Task OnInitializedAsync()
     {
         loading = true;
         tools = await ToolsService.GetAll();
+        places = await PlacesService.GetAll();
+        persons = await PersonsService.GetAll();
+        toolCategories = await ToolCategoriesService.GetAll();
+
 
         loading = false;
     }

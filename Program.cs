@@ -13,6 +13,9 @@ builder.Services
     .AddScoped<IAuthenticationService, AuthenticationService>()
                 .AddScoped<IAdminService, AdminService>()
                 .AddScoped<IToolsService, ToolsService>()
+                .AddScoped<IToolCategoriesService, ToolCategoriesService>()
+                .AddScoped<IPlacesService, PlacesService>()
+                .AddScoped<IPersonsService, PersonsService>()
                 .AddScoped<IHttpService, HttpService>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
 
