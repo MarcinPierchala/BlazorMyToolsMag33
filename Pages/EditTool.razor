@@ -66,9 +66,6 @@
     private IEnumerable<Place> places;
     private IEnumerable<Person> persons;
     private IEnumerable<ToolCategory> toolCategories;
-    private List<string> placesList;
-    private List<string> personsList;
-    private List<string> categoriesList;
     private string selectedCategory = "";
     private string selectedPlace = "";
     private string selectedPerson = "";
@@ -78,20 +75,8 @@
     {
         tool = await ToolsService.GetById(Convert.ToInt32(Id));
         places = await PlacesService.GetAll();
-        //foreach (var placeee in places)
-        //{
-        //    placesList.Add(placeee.PlaceName.ToString());
-        //}
         persons = await PersonsService.GetAll();
-        //foreach (var personnn in persons)
-        //{
-        //    personsList.Add(personnn.PersonName.ToString());
-        //}
-        toolCategories = await ToolCategoriesService.GetAll();
-        //foreach (var categoriesss in toolCategories)
-        //{
-        //    categoriesList.Add(categoriesss.ToolCategoryName.ToString());
-        //}
+        toolCategories = await ToolCategoriesService.GetAll();       
         selectedCategory = toolCategories.Single(x => x.Id == tool.ToolCategoryId).ToolCategoryName;
         selectedPlace = places.Single(x => x.Id == tool.PlaceId).PlaceName;
         selectedPerson = persons.Single(x => x.Id == tool.PersonId).PersonName;
