@@ -18,10 +18,13 @@
                     <td>Category    </td>
                     <select class="form-control col-6" @onchange="@(x => OnSelCategoryChange(Convert.ToInt32(x.Value)))">
                         <option value=@tool.ToolCategoryId disabled selected hidden>@selectedCategory</option>
-                        @foreach (var cats in toolCategories)
+                        @if(toolCategories != null)
                         {
-                            <option value=@cats.Id>@cats.ToolCategoryName</option>
-                        }
+                            @foreach (var cats in toolCategories)
+                            {
+                                <option value=@cats.Id>@cats.ToolCategoryName</option>
+                            }
+                        }                        
                     </select>
                 </tr>
                 <label for="PersonId" class="control-label">PersonId</label>
