@@ -14,23 +14,39 @@
             <div class="form-group">
                 <label for="Name" class="control-label">Name</label>
                 <input for="Name" class="form-control" @bind-value="@tool.ToolName" />
-                <tr>
-                    <td>Category    </td>
-                    <select class="form-control col-6" @onchange="@(x => OnSelCategoryChange(Convert.ToInt32(x.Value)))">
-                        <option value=@tool.ToolCategoryId disabled selected hidden>@selectedCategory</option>
-                        @if(toolCategories != null)
+                <td>Category    </td>
+                <select class="form-control col-6" @onchange="@(x => OnSelCategoryChange(Convert.ToInt32(x.Value)))">
+                    <option value=@tool.ToolCategoryId disabled selected hidden>@selectedCategory</option>
+                    @if (toolCategories != null)
+                    {
+                        @foreach (var cats in toolCategories)
                         {
-                            @foreach (var cats in toolCategories)
-                            {
-                                <option value=@cats.Id>@cats.ToolCategoryName</option>
-                            }
-                        }                        
-                    </select>
-                </tr>
-                <label for="PersonId" class="control-label">PersonId</label>
-                <input for="PersonId" class="form-control" @bind-value="@tool.PersonId" />
-                <label for="PlaceId" class="control-label">PlaceId</label>
-                <input for="PlaceId" class="form-control" @bind-value="@tool.PlaceId" />
+                            <option value=@cats.Id>@cats.ToolCategoryName</option>
+                        }
+                    }
+                </select>
+                <td>Person    </td>
+                <select class="form-control col-6" @onchange="@(x => OnSelPersonChange(Convert.ToInt32(x.Value)))">
+                    <option value=@tool.PersonId disabled selected hidden>@selectedPerson</option>
+                    @if (persons != null)
+                    {
+                        @foreach (var cats in persons)
+                        {
+                            <option value=@cats.Id>@cats.PersonName</option>
+                        }
+                    }
+                </select>
+                <td>Place    </td>
+                <select class="form-control col-6" @onchange="@(x => OnSelPlaceChange(Convert.ToInt32(x.Value)))">
+                    <option value=@tool.PlaceId disabled selected hidden>@selectedPlace</option>
+                    @if (places != null)
+                    {
+                        @foreach (var cats in places)
+                        {
+                            <option value=@cats.Id>@cats.PlaceName</option>
+                        }
+                    }
+                </select>
                 <input type="hidden" @bind-value="@tool.Id" />
             </div>
             <div class="form-group">
@@ -54,6 +70,9 @@
     private List<string> personsList;
     private List<string> categoriesList;
     private string selectedCategory = "";
+    private string selectedPlace = "";
+    private string selectedPerson = "";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,6 +93,8 @@
         //    categoriesList.Add(categoriesss.ToolCategoryName.ToString());
         //}
         selectedCategory = toolCategories.Single(x => x.Id == tool.ToolCategoryId).ToolCategoryName;
+        selectedPlace = places.Single(x => x.Id == tool.PlaceId).PlaceName;
+        selectedPerson = persons.Single(x => x.Id == tool.PersonId).PersonName;
     }
 
     protected async Task UpdateTool()
@@ -87,5 +108,7 @@
         navigationManager.NavigateTo("/tools");
     }
     public void OnSelCategoryChange(int textValue) => tool.ToolCategoryId = textValue;
+    public void OnSelPlaceChange(int textValue) => tool.PlaceId = textValue;
+    public void OnSelPersonChange(int textValue) => tool.PersonId = textValue;
 
 }
